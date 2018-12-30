@@ -26,3 +26,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    admin.games:
+        class: App\Admin\GamesAdmin
+        arguments: [~, App\Entity\Games, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Games }
+        public: true
+    admin.user:
+        class: App\Admin\UserAdmin
+        arguments: [~, App\Entity\User, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: User }
+        public: true

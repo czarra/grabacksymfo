@@ -11,56 +11,59 @@
  *
  * @author rad
  */
-// src/Entity/Product.php
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
+ * @ORM\Entity
  */
-class user
+class User implements UserInterface
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="email", type="string", unique=true)
      */
     private $email;
 
-    public function getId()
-    {
+    /**
+     * @ORM\Column(name="password", type="string", nullable=true)
+     */
+    private $password;
+
+    /**
+     * @ORM\Column(name="roles", type="json_array")
+     */
+    private $roles;
+
+     public function getId(){
         return $this->id;
     }
     
-    public function getName()
-    {
-        return $this->name;
+    public function getRoles(){
+        return $this->roles;
     }
     
-    public function getEmail()
-    {
+    public function getPassword(){
+        return $this->password;
+    }
+
+    public function getUsername(){
         return $this->email;
     }
     
-    public function setName($name)
-    {
-        $this->name = $name;
+    public function getSalt(){
+        return 0;
     }
     
-    public function setEmail($email)
-    {
-        $this->email = $email;
+    public function eraseCredentials(){
+        
     }
-
 }
