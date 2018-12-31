@@ -7,3 +7,7 @@ app_api_number:
 app_api_logowanie:
     path: /api/logowanie
     controller: App\Controller\ApiController::logowanie
+    
+app_api_register_user:
+    path: /api/register_user
+    controller: App\Controller\ApiController::registerUser
