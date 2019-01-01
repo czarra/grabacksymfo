@@ -22,7 +22,28 @@ class User extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->roles = array('ROLE_USER'); 
+        $this->roles = array('ROLE_USER');
+        $this->salt= $this->createSalt();
+        $this->apiToken = md5(time().$this->salt);
+        
         // your own logic
+    }
+    
+    private function createSalt()
+    {
+        $string = md5(uniqid(rand(), true));
+        return substr($string, 0, 3);
+    }
+    /**
+     * @ORM\Column(type="string", unique=true)
+     */
+    private $apiToken;
+    
+    public function getApiToken(){
+        return $this->apiToken;
+    }
+    
+    public function setApiToken($apiToken){
+        $this->apiToken=$apiToken;
     }
 }
