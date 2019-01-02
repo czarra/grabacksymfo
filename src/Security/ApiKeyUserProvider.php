@@ -15,26 +15,49 @@ namespace App\Security;
  */
 namespace App\Security;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\User as MyUser;
+use FOS\UserBundle\Doctrine\UserManager;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
+    private $entityManager;
+
+    public function __construct(  EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    
     public function getUsernameForApiKey($apiKey)
     {
-        // Look up the username based on the token in the database, via
-        // an API call, or do something entirely different
-        
-        //@fixme
-        $username = 'root';
+        // Look up the username based on the token in the datab
+        $userRepository = $this->entityManager->getRepository('App\Entity\User');
+        $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
+     //   var_dump($user->getUsername());die;
+    //    $aa =  $this->entityManager->getRepository('doctrine.orm.entity_manager');
+        //$aa->
+        $username = 'sa';
 
         return $username;
     }
 
     public function loadUserByUsername($username)
     {
+//         private $username;
+//    private $password;
+//    private $enabled;
+//    private $accountNonExpired;
+//    private $credentialsNonExpired;
+//    private $accountNonLocked;
+//    private $roles;
+        
         return new User(
             $username,
             null,
@@ -55,6 +78,7 @@ class ApiKeyUserProvider implements UserProviderInterface
 
         // if you are *not* reading from a database and are just creating
         // a User object (like in this example), you can just return it
+        echo 'safsadf' ;die;
         return $user;
     }
 
