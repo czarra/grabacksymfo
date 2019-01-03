@@ -39,11 +39,15 @@ class ApiKeyUserProvider implements UserProviderInterface
     {
         // Look up the username based on the token in the datab
         $userRepository = $this->entityManager->getRepository('App\Entity\User');
-        $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
-     //   var_dump($user->getUsername());die;
+      //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
+        $user= $userRepository->findOneBy(array('apiToken'=>$apiKey));
+      
     //    $aa =  $this->entityManager->getRepository('doctrine.orm.entity_manager');
         //$aa->
-        $username = 'sa';
+        if(!$user){
+            return null;
+        }
+        $username = $user->getUsername();
 
         return $username;
     }
@@ -53,11 +57,11 @@ class ApiKeyUserProvider implements UserProviderInterface
 //         private $username;
 //    private $password;
 //    private $enabled;
-//    private $accountNonExpired;
+//    private $accountNonExpired;var_dump($username);die;
 //    private $credentialsNonExpired;
 //    private $accountNonLocked;
 //    private $roles;
-        
+
         return new User(
             $username,
             null,

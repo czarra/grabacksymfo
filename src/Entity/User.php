@@ -46,4 +46,8 @@ class User extends BaseUser implements UserInterface
     public function setApiToken($apiToken){
         $this->apiToken=$apiToken;
     }
+    
+    public function __toString() {
+        return $this->username;
+    }
 }
