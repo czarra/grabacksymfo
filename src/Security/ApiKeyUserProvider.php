@@ -42,33 +42,29 @@ class ApiKeyUserProvider implements UserProviderInterface
       //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
         $user= $userRepository->findOneBy(array('apiToken'=>$apiKey));
       
-    //    $aa =  $this->entityManager->getRepository('doctrine.orm.entity_manager');
-        //$aa->
         if(!$user){
             return null;
-        }
+        } 
         $username = $user->getUsername();
-
+        
         return $username;
     }
 
     public function loadUserByUsername($username)
     {
-//         private $username;
-//    private $password;
-//    private $enabled;
-//    private $accountNonExpired;var_dump($username);die;
-//    private $credentialsNonExpired;
-//    private $accountNonLocked;
-//    private $roles;
-
-        return new User(
-            $username,
-            null,
-            // the roles for the user - you may choose to determine
-            // these dynamically somehow based on the user
-            array('ROLE_API')
-        );
+        $userRepository = $this->entityManager->getRepository('App\Entity\User');
+      //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
+        $user= $userRepository->findOneBy(array('username'=>$username));
+        $user->addRole('ROLE_API');
+        return $user;
+        
+//        return new User(
+//            $username,
+//            null,
+//            // the roles for the user - you may choose to determine
+//            // these dynamically somehow based on the user
+//            array('ROLE_API')
+//        );
     }
 
     public function refreshUser(UserInterface $user)
@@ -82,12 +78,13 @@ class ApiKeyUserProvider implements UserProviderInterface
 
         // if you are *not* reading from a database and are just creating
         // a User object (like in this example), you can just return it
-        echo 'safsadf' ;die;
+        
+        var_dump('sfdgfgsfd');die;
         return $user;
     }
 
     public function supportsClass($class)
     {
-        return User::class === $class;
+        return MyUser::class === $class;
     }
 }

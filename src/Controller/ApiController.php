@@ -28,7 +28,7 @@ class ApiController extends Controller
     public function number()
     {
         $number = random_int(0, 100);
-
+        var_dump($this->getUser()->getUsername());die;
         return new Response(
             '<html><body>Lucky number: '.$number.'</body></html>'
         );
@@ -38,7 +38,8 @@ class ApiController extends Controller
     /**
      * @Route("/api/logowanie")
      */
-    public function logowanie(){
+    public function logowanie(Request $request){
+        
         $response = new JsonResponse(array('data' => 123));
         return $response;
     }
@@ -46,7 +47,7 @@ class ApiController extends Controller
     /**
     * @Route("/api/register_user")
     */  
-    public function registerUser(/*Request $request*/){
+    public function registerUser(Request $request){
         $succesfullyRegistered = $this->register("demo1@email.com","demoUsername1","demoPassword");
 
         if($succesfullyRegistered){
