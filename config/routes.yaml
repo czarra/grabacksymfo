@@ -1,13 +1,6 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
-app_api_number:
-    path: /api/number
-    controller: App\Controller\ApiController::number
-app_api_logowanie:
-    path: /api/logowanie
-    controller: App\Controller\ApiController::logowanie
-    
-app_api_register_user:
-    path: /api/register_user
-    controller: App\Controller\ApiController::registerUser
+#app_api_number:
+#    path: /api/number
+#    controller: App\Controller\ApiController::number
