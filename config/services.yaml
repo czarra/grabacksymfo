@@ -33,5 +33,12 @@ services:
         class: App\Admin\GamesAdmin
         arguments: [~, App\Entity\Games, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Games }
+            - { name: sonata.admin, manager_type: orm, label: Gry }
+        public: true
+        
+    admin.tasks:
+        class: App\Admin\TasksAdmin
+        arguments: [~, App\Entity\Tasks, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Zadania }
         public: true

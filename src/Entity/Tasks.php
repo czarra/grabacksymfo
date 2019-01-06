@@ -17,9 +17,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GamesRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\TasksRepository")
  */
-class Games
+class Tasks
 {
     /**
      * @ORM\Id
@@ -29,14 +29,19 @@ class Games
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=35, unique=true)
+     * @ORM\Column(type="string", length=35, unique=true )
      */
     private $name;
     
     /**
-     * @ORM\Column(type="string", length=10, unique=true)
+     * @ORM\Column(type="float")
      */
-    private $code;
+    private $longitude;
+    
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $latitude;
     
     /**
      * @ORM\Column(type="string", length=255)
@@ -45,7 +50,7 @@ class Games
 
     public function __construct()
     {
-        $this->code = $this->generateRandomString();
+
     }
 
     public function getId()
@@ -63,16 +68,25 @@ class Games
         $this->name = $name;
     }
     
-    public function getCode()
+    public function getLongitude()
     {
-        return $this->code;
+        return $this->longitude;
     }
     
-    public function setCode($code)
+    public function setLongitude($longitude)
     {
-        $this->code = $code;
+        $this->longitude = $longitude;
     }
     
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+    
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+    }
     public function getDescription()
     {
         return $this->description;
@@ -84,16 +98,6 @@ class Games
     }
     
     public function __toString() {
-        return "Game : ".$this->name ." Code : ". $this->code ;
-    }
-    
-    private function generateRandomString($length = 10) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-        return $randomString;
+        return "Task : ".$this->name ." id : ". $this->id ;
     }
 }
