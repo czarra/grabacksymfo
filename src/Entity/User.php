@@ -25,8 +25,6 @@ class User extends BaseUser implements UserInterface
         $this->roles = array('ROLE_USER');
         $this->salt= $this->createSalt();
         $this->apiToken = md5(time().$this->salt);
-        
-        // your own logic
     }
     
     private function createSalt()

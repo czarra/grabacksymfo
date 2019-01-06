@@ -29,10 +29,24 @@ class Games
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=35)
      */
     private $name;
+    
+    /**
+     * @ORM\Column(type="string", length=10, unique=true)
+     */
+    private $code;
+    
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $description;
 
+    public function __construct()
+    {
+        $this->code = $this->generateRandomString();
+    }
 
     public function getId()
     {
@@ -48,5 +62,38 @@ class Games
     {
         $this->name = $name;
     }
-
+    
+    public function getCode()
+    {
+        return $this->code;
+    }
+    
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+    
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+    
+    public function __toString() {
+        return "Game : ".$this->name ." Code : ". $this->code ;
+    }
+    
+    private function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 }

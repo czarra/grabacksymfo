@@ -24,17 +24,24 @@ class GamesAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add('name', TextType::class);
+        $formMapper
+                ->add('name', TextType::class, array('label' => 'Nazwa'))
+                ->add('description', TextType::class, array('label' => 'Opis'));
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('name');
+        $datagridMapper
+                ->add('name', null, array('label' => 'Nazwa'))
+                ->add('code', null, array('label' => 'Kod'));
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('id');
-        $listMapper->add('name');
+        $listMapper
+                ->add('name', TextType::class, array('label' => 'Nazwa'))
+                ->add('code', TextType::class, array('label' => 'Kod'))
+                ->add('description', TextType::class, array('label' => 'Opis'));
     }
 }
