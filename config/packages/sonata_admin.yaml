@@ -3,12 +3,7 @@ sonata_admin:
     dashboard:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
-        groups:
-            Gry zadania:
-                items:
-                    - admin.games
-                    - admin.tasks
-                    - admin.gametasks
+       
 
 sonata_block:
     blocks:

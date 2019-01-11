@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
-use App\Entity\User;
+use App\Application\Sonata\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
 class LoginRegisterApiControler extends Controller{
@@ -38,7 +38,7 @@ class LoginRegisterApiControler extends Controller{
         if(!empty($username) && !empty($password)){
             $respons = $this->loginUser($username,$password,$respons);
         } else {
-            $respons['error'] = 'Empty username ore password';
+            $respons['error'] = 'Empty username or password';
         }
         
         
@@ -75,7 +75,7 @@ class LoginRegisterApiControler extends Controller{
     private function loginUser($username,$password,Array $respons){
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->findUserByUsername($username);
-      
+
         if(!$user){
             $respons['error'] = 'Username doesn\'t exist';
             return $respons;

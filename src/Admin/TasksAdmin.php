@@ -11,7 +11,7 @@
  *
  * @author rad
  */
-// src/Admin/CategoryAdmin.php
+
 namespace App\Admin;
 
 use Sonata\AdminBundle\Admin\AbstractAdmin;

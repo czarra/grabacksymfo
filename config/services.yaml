@@ -49,3 +49,10 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, label: GryZadania }
         public: true
+        
+    admin.usergame:
+        class: App\Admin\UserGameAdmin
+        arguments: [~, App\Entity\UserGame, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Wyniki }
+        public: true
