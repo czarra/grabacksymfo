@@ -11,7 +11,7 @@
  *
  * @author rad
  */
-// src/Entity/Product.php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -98,6 +98,6 @@ class Tasks
     }
     
     public function __toString() {
-        return "Task : ".$this->name ." id : ". $this->id ;
+        return "Zadanie : ".$this->name ;
     }
 }

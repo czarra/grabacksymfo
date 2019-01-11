@@ -11,7 +11,7 @@
  *
  * @author rad
  */
-// src/Entity/Product.php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -84,7 +84,7 @@ class Games
     }
     
     public function __toString() {
-        return "Game : ".$this->name ." Code : ". $this->code ;
+        return "Nazwa : ".$this->name ." Kod : ". $this->code ;
     }
     
     private function generateRandomString($length = 10) {

@@ -19,6 +19,9 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class TasksAdmin extends AbstractAdmin
 {
@@ -28,7 +31,7 @@ class TasksAdmin extends AbstractAdmin
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('longitude')
                 ->add('latitude')
-                ->add('description', TextType::class, array('label' => 'Opis'));
+                ->add('description', TextareaType::class, array('label' => 'Opis'));
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -46,6 +49,28 @@ class TasksAdmin extends AbstractAdmin
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('longitude')
                 ->add('latitude')
+                ->add('description', TextareaType::class, array('label' => 'Opis'))
+                ->add('_action', 'actions', array('actions' => array(
+                        'show' => array(),
+                        'edit' => array(),
+                        'delete' => array(),
+                        ),'label' => 'Akcje')
+                    );
+    }
+    
+    protected function configureShowFields(ShowMapper $showMapper)
+    {
+        $showMapper
+                ->add('name', TextType::class, array('label' => 'Nazwa'))
+                ->add('longitude')
+                ->add('latitude')
                 ->add('description', TextType::class, array('label' => 'Opis'));
+        
+    }
+    
+     protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
+//        $collection->remove('show');
     }
 }

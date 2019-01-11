@@ -8,6 +8,7 @@ sonata_admin:
                 items:
                     - admin.games
                     - admin.tasks
+                    - admin.gametasks
 
 sonata_block:
     blocks:

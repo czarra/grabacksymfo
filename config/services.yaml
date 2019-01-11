@@ -4,8 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
-
+    locale: 'pl' 
+#set language
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -41,4 +41,11 @@ services:
         arguments: [~, App\Entity\Tasks, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Zadania }
+        public: true
+        
+    admin.gametasks:
+        class: App\Admin\GameTasksAdmin
+        arguments: [~, App\Entity\GameTasks, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: GryZadania }
         public: true
