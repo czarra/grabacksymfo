@@ -97,9 +97,7 @@ class UserAdmin extends BaseUserAdmin
     {
         $filterMapper
             ->add('email')
-            ->add('groups')
             ->add('enabled')
-            ->add('createdAt')
         ;
     }
     /**

@@ -23,12 +23,13 @@ use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use App\Application\Sonata\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class LoginRegisterApiControler extends Controller{
        /**
      * @Route("/login_register_api/login")
      */
-    public function loginAction(Request $request){
+    public function loginAction(Request $request, UserPasswordEncoderInterface $encoder){
         $username =  $request->query->get('username');
         $password = $request->query->get('password');
         $respons = array('username'=>'', 
@@ -36,7 +37,7 @@ class LoginRegisterApiControler extends Controller{
               'error'=>'');
         
         if(!empty($username) && !empty($password)){
-            $respons = $this->loginUser($username,$password,$respons);
+            $respons = $this->loginUser($username,$password,$respons,$encoder);
         } else {
             $respons['error'] = 'Empty username or password';
         }
@@ -72,20 +73,22 @@ class LoginRegisterApiControler extends Controller{
         return $response;
     }
     
-    private function loginUser($username,$password,Array $respons){
+    private function loginUser($username,$password,Array $respons,UserPasswordEncoderInterface $encoder){
         $userManager = $this->get('fos_user.user_manager');
-        $user = $userManager->findUserByUsername($username);
-
+        $user = $userManager->findUserByUsername($username);      
+        
         if(!$user){
             $respons['error'] = 'Username doesn\'t exist';
             return $respons;
         }
-        $correct = password_verify($password, $user->getPassword());
-        if($correct){
+        $correct = $encoder->isPasswordValid($user, $password);//password_verify($password, $user->getPassword());
+        if($correct && $user->isEnabled()){
             $respons['username'] = $user->getUsername();
             $respons['apiKey'] = $user->getApiToken();
+        } else if($correct && !$user->isEnabled()){
+            $respons['error'] = 'Username - inactive';
         } else {
-            $respons['error'] = 'Username or Password doesn\'t exist';
+            $respons['error'] = 'Username or Password - incorrect';
         }
         return $respons;
  
