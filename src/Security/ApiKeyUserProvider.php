@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\User;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\User as MyUser;
+use App\Application\Sonata\UserBundle\Entity\User as MyUser;
 use FOS\UserBundle\Doctrine\UserManager;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
@@ -38,7 +38,7 @@ class ApiKeyUserProvider implements UserProviderInterface
     public function getUsernameForApiKey($apiKey)
     {
         // Look up the username based on the token in the datab
-        $userRepository = $this->entityManager->getRepository('App\Entity\User');
+        $userRepository = $this->entityManager->getRepository('App\Application\Sonata\UserBundle\Entity\User');
       //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
         $user= $userRepository->findOneBy(array('apiToken'=>$apiKey));
       
@@ -52,7 +52,7 @@ class ApiKeyUserProvider implements UserProviderInterface
 
     public function loadUserByUsername($username)
     {
-        $userRepository = $this->entityManager->getRepository('App\Entity\User');
+        $userRepository = $this->entityManager->getRepository('App\Application\Sonata\UserBundle\Entity\User');
       //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
         $user= $userRepository->findOneBy(array('username'=>$username));
         $user->addRole('ROLE_API');
@@ -79,7 +79,7 @@ class ApiKeyUserProvider implements UserProviderInterface
         // if you are *not* reading from a database and are just creating
         // a User object (like in this example), you can just return it
         
-        var_dump('sfdgfgsfd');die;
+        //var_dump('sfdgfgsfd');die;
         return $user;
     }
 

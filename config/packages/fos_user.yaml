@@ -1,7 +1,13 @@
 fos_user:
-    db_driver: orm
-    firewall_name: main
-    user_class: App\Entity\User
+    db_driver:      orm # can be orm or odm
+    firewall_name:  main
+    user_class:     App\Application\Sonata\UserBundle\Entity\User
+
+    group:
+        group_class:   App\Application\Sonata\UserBundle\Entity\Group
+    service:
+        user_manager: sonata.user.orm.user_manager
+
     from_email:
         address: "radomich1@vp.pl"
         sender_name: "radomich1@vp.pl"

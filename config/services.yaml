@@ -33,19 +33,26 @@ services:
         class: App\Admin\GamesAdmin
         arguments: [~, App\Entity\Games, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Gry }
+            - { name: sonata.admin, manager_type: orm, group: "Zagrajmy", label: Gry }
         public: true
         
     admin.tasks:
         class: App\Admin\TasksAdmin
         arguments: [~, App\Entity\Tasks, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: Zadania }
+            - { name: sonata.admin, manager_type: orm, group: "Zagrajmy", label: Zadania }
         public: true
         
     admin.gametasks:
         class: App\Admin\GameTasksAdmin
         arguments: [~, App\Entity\GameTasks, ~]
         tags:
-            - { name: sonata.admin, manager_type: orm, label: GryZadania }
+            - { name: sonata.admin, manager_type: orm, group: "Zagrajmy", label: GryZadania }
+        public: true
+        
+    admin.usergame:
+        class: App\Admin\UserGameAdmin
+        arguments: [~, App\Entity\UserGame, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: "Zagrajmy", label: Wyniki }
         public: true
