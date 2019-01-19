@@ -21,6 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Games
 {
+    const ACTIVE_NO = 0;
+    const ACTIVE_YES = 1;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -42,6 +44,11 @@ class Games
      * @ORM\Column(type="string", length=255)
      */
     private $description;
+    
+    /**
+     * @ORM\Column(columnDefinition="TINYINT DEFAULT 1 NOT NULL")
+     */
+    private $enabled;
 
     public function __construct()
     {
@@ -83,6 +90,18 @@ class Games
         $this->description = $description;
     }
     
+    
+    public function getEnabled()
+    {
+        $arrayChoise = $this->getEnabledChoicesLoc();
+        return $arrayChoise[$this->enabled];
+    }
+    
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+    }
+    
     public function __toString() {
         return "Nazwa : ".$this->name ." Kod : ". $this->code ;
     }
@@ -95,5 +114,20 @@ class Games
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+    
+    public static function getEnabledChoices()
+    {
+        return array(
+            'TAK'  =>  self::ACTIVE_YES,
+            'NIE'  => self::ACTIVE_NO,
+        );
+    }
+    public function getEnabledChoicesLoc()
+    {
+        return array(
+            self::ACTIVE_YES =>'TAK',
+            self::ACTIVE_NO =>'NIE',
+        );
     }
 }

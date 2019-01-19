@@ -22,6 +22,7 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class GamesAdmin extends AbstractAdmin
 {
@@ -29,7 +30,11 @@ class GamesAdmin extends AbstractAdmin
     {
         $formMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('description', TextareaType::class, array('label' => 'Opis'));
+                ->add('description', TextareaType::class, array('label' => 'Opis'))
+                ->add('enabled', ChoiceType::class, array(
+                    'choices' => \App\Entity\Games::getEnabledChoices(),
+                     'label' => 'Aktywna'));
+         
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -46,6 +51,9 @@ class GamesAdmin extends AbstractAdmin
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('code', TextType::class, array('label' => 'Kod'))
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
+                ->add('enabled', TextType::class, array(
+                    'label' => 'Aktywna'
+                   ))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
                         'edit' => array(),
@@ -59,7 +67,10 @@ class GamesAdmin extends AbstractAdmin
         $showMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('code', TextType::class, array('label' => 'Kod'))
-                ->add('description', TextType::class, array('label' => 'Opis'));
+                ->add('description', TextType::class, array('label' => 'Opis'))
+                ->add('enabled',TextType::class, array(
+                     'label' => 'Aktywna'
+                    ));
         
     }
     
