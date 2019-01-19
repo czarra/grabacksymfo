@@ -115,6 +115,7 @@ class UserAdmin extends BaseUserAdmin
             ->add('enabled')
             ->add('createdAt')
             ->add('_action', 'actions', array(
+                'label' => 'Akcje',
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
