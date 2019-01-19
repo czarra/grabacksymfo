@@ -24,9 +24,9 @@ class UserAdmin extends BaseUserAdmin
         $showMapper
             ->add('username')
             ->add('email')
-            ->add('enabled')
+            ->add('enabled', null, array('label' => 'Aktywny'))
             ->add('groups')
-            ->add('createdAt')
+            ->add('createdAt',null, array('label' => 'Rejestracja'))
         ;
     }
 
