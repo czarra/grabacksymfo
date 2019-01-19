@@ -98,6 +98,11 @@ class Games
         return $arrayChoise[$this->enabled];
     }
     
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+    
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
