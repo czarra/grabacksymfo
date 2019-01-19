@@ -4,9 +4,11 @@ sonata_admin:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
         groups:
-            Gry:
+            Gry zadania:
                 items:
                     - admin.games
+                    - admin.tasks
+                    - admin.gametasks
 
 sonata_block:
     blocks:

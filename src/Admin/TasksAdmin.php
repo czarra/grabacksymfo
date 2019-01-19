@@ -18,17 +18,19 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
 
-class GamesAdmin extends AbstractAdmin
+class TasksAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
+                ->add('longitude')
+                ->add('latitude')
                 ->add('description', TextareaType::class, array('label' => 'Opis'));
     }
 
@@ -36,7 +38,8 @@ class GamesAdmin extends AbstractAdmin
     {
         $datagridMapper
                 ->add('name', null, array('label' => 'Nazwa'))
-                ->add('code', null, array('label' => 'Kod'));
+                ->add('longitude')
+                ->add('latitude');
     }
 
     protected function configureListFields(ListMapper $listMapper)
@@ -44,7 +47,8 @@ class GamesAdmin extends AbstractAdmin
         $listMapper->addIdentifier('id');
         $listMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('code', TextType::class, array('label' => 'Kod'))
+                ->add('longitude')
+                ->add('latitude')
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
@@ -58,12 +62,13 @@ class GamesAdmin extends AbstractAdmin
     {
         $showMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('code', TextType::class, array('label' => 'Kod'))
+                ->add('longitude')
+                ->add('latitude')
                 ->add('description', TextType::class, array('label' => 'Opis'));
         
     }
     
-    protected function configureRoutes(RouteCollection $collection)
+     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('delete');
 //        $collection->remove('show');

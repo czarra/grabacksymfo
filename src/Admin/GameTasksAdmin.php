@@ -17,50 +17,64 @@ namespace App\Admin;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class GamesAdmin extends AbstractAdmin
+class GameTasksAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $formMapper)
     {
+        
         $formMapper
-                ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('description', TextareaType::class, array('label' => 'Opis'));
+                ->add('game', null, array('required' => true,'label' => 'Gra'))
+                ->add('task', null, array('required' => true,'label' => 'Zadanie') )
+                ->add('sequence', null, array('required' => true,'label' => 'Kolejność'));
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
+        
         $datagridMapper
-                ->add('name', null, array('label' => 'Nazwa'))
-                ->add('code', null, array('label' => 'Kod'));
+                ->add('sequence', null, array('label' => 'Kolejność'));
+
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
-        $listMapper->addIdentifier('id');
+
+         
         $listMapper
-                ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('code', TextType::class, array('label' => 'Kod'))
-                ->add('description', TextareaType::class, array('label' => 'Opis'))
+                ->add('game', TextType::class, array('label' => 'Gra'))
+                ->add('task', TextType::class, array('label' => 'Zadanie'))
+                ->add('sequence', TextType::class, array('label' => 'Kolejność'))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
                         'edit' => array(),
                         'delete' => array(),
                         ),'label' => 'Akcje')
                     );
+        
+               
     }
-    
+   
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-                ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('code', TextType::class, array('label' => 'Kod'))
-                ->add('description', TextType::class, array('label' => 'Opis'));
+            //    ->add('id')
+                ->add('game', TextType::class, array('label' => 'Gra'))
+                ->add('task', TextType::class, array('label' => 'Zadanie'))
+                ->add('sequence', TextType::class, array('label' => 'Kolejność'));
         
+        
+    }
+
+    
+    
+    public function validate(ErrorElement $errorElement, $object)
+    {
+      
     }
     
     protected function configureRoutes(RouteCollection $collection)
@@ -68,4 +82,14 @@ class GamesAdmin extends AbstractAdmin
         $collection->remove('delete');
 //        $collection->remove('show');
     }
+    
+    public function createQuery($context = 'list')
+    {
+
+     
+        $query = parent::createQuery($context);
+
+        return $query;
+    }
+    
 }
