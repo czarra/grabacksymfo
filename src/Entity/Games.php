@@ -53,6 +53,7 @@ class Games
     public function __construct()
     {
         $this->code = $this->generateRandomString();
+        $this->enabled=1;
     }
 
     public function getId()
