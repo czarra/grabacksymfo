@@ -30,8 +30,9 @@ class LoginRegisterApiControler extends Controller{
      * @Route("/login_register_api/login")
      */
     public function loginAction(Request $request, UserPasswordEncoderInterface $encoder){
-        $username =  $request->query->get('username');
-        $password = $request->query->get('password');
+        
+        $username =  $request->get('username');
+        $password = $request->get('password');
         $respons = array('username'=>'', 
               'apiKey'=>'',
               'error'=>'');
@@ -52,9 +53,9 @@ class LoginRegisterApiControler extends Controller{
     */  
     public function registerAction(Request $request){
         
-        $username =  $request->query->get('username');
-        $email = $request->query->get('email');
-        $password = $request->query->get('password');
+        $username =  $request->get('username');
+        $email = $request->get('email');
+        $password = $request->get('password');
         if(empty($username) || empty($email) || empty($password)){
             $succesfullyRegistered=false;
         }else {   

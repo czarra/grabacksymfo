@@ -51,7 +51,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface, Authentica
         //$apiKey = '2c91c33f4940deab72e032991938608c';//$request->query->get('apikey');
 
         // or if you want to use an "apikey" header, then do something like this:
-        $apiKey = $request->query->get('apikey');
+        $apiKey = $request->get('apikey');
 
         if (!$apiKey) {
             throw new BadCredentialsException();
