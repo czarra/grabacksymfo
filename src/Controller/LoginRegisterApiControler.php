@@ -31,12 +31,17 @@ class LoginRegisterApiControler extends Controller{
      */
     public function loginAction(Request $request, UserPasswordEncoderInterface $encoder){
         
+
         $username =  $request->get('username');
+        $email =  $request->get('email');
         $password = $request->get('password');
         $respons = array('username'=>'', 
               'apiKey'=>'',
               'error'=>'');
-        
+        if(empty($username)){
+            $username = $email;
+        }
+
         if(!empty($username) && !empty($password)){
             $respons = $this->loginUser($username,$password,$respons,$encoder);
         } else {
@@ -79,8 +84,11 @@ class LoginRegisterApiControler extends Controller{
         $user = $userManager->findUserByUsername($username);      
         
         if(!$user){
-            $respons['error'] = 'Username doesn\'t exist';
-            return $respons;
+            $user = $userManager->findUserByEmail($username);
+            if(!$user){
+                $respons['error'] = 'Username doesn\'t exist';
+                return $respons;
+            }
         }
         $correct = $encoder->isPasswordValid($user, $password);//password_verify($password, $user->getPassword());
         if($correct && $user->isEnabled()){
