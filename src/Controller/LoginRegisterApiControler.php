@@ -24,6 +24,7 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use App\Application\Sonata\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class LoginRegisterApiControler extends Controller{
        /**
@@ -68,12 +69,15 @@ class LoginRegisterApiControler extends Controller{
         }
         $code = 200;
         $data = array();
-        if($succesfullyRegistered){
+        if($succesfullyRegistered['ok']){
             // the user is now registered !
-             $response = new JsonResponse(array('data' => 'ok'));
+            $userManager = $this->get('fos_user.user_manager');
+            $user = $userManager->findUserByUsername($username); 
+            $succesfullyRegistered['apiKey'] = $user->getApiToken();
+            $response = new JsonResponse($succesfullyRegistered);
         }else{
-            // the user exists already !
-             $response = new JsonResponse(array('data' => 'exist'));
+            // the user exists already or something wrong!
+             $response = new JsonResponse($succesfullyRegistered);
         }
        
         return $response;
@@ -110,20 +114,36 @@ class LoginRegisterApiControler extends Controller{
     **/
     private function registerUser($email,$username,$password){    
         $userManager = $this->get('fos_user.user_manager');
-
-        // Or you can use the doctrine entity manager if you want instead the fosuser manager
-        // to find 
-        //$em = $this->getDoctrine()->getManager();
-        //$usersRepository = $em->getRepository("mybundleuserBundle:User");
-        // or use directly the namespace and the name of the class 
-        // $usersRepository = $em->getRepository("mybundle\userBundle\Entity\User");
-        //$email_exist = $usersRepository->findOneBy(array('email' => $email));
-
+        $response['ok']=true;
+        $response['error']='';
+        $arraCheck=array(
+            'email'=>$this->checkEmail($email),
+            'username'=>$this->checkUsername($username),
+            'password'=>$this->checkPassword($password)
+        );
+        if(count($arraCheck['password']) 
+                ||count($arraCheck['email'])
+                ||count($arraCheck['username']) ){
+            $response['ok']=false;
+            $messages = [];
+            foreach($arraCheck as $key=>$errors){
+                if (count($errors) >0) {
+                    foreach ($errors as $violation) {
+                        $messages[$key]=$violation->getMessage();
+                        continue;
+                    };
+                }
+            }  
+            $response['error']=$messages;
+            return  $response;
+        }
         $email_exist = $userManager->findUserByEmail($email);
         $username_exist = $userManager->findUserByUsername($username);
         // Check if the user exists to prevent Integrity constraint violation error in the insertion
         if($email_exist || $username_exist){
-            return false;
+            $response['ok']=false;
+            $response['error']=array('message'=>'User exist!');
+            return  $response;
         }
 
         $user = $userManager->createUser();
@@ -134,6 +154,7 @@ class LoginRegisterApiControler extends Controller{
         $user->setEnabled(1); // enable the user or enable it later with a confirmation token in the email
         // this method will encrypt the password with the default settings :)
         $user->setPlainPassword($password);
+
         $userManager->updateUser($user);
 //        $em = $this->getDoctrine()->getManager();
 //        $user2 = $userManager->findUserByEmail($email);
@@ -145,6 +166,33 @@ class LoginRegisterApiControler extends Controller{
 //        $em->persist($user2);
 //        $em->flush();
 
-        return true;
+        return $response;
+    }
+    
+    
+    private function checkUsername($username){
+        $validator = $this->container->get('validator');
+        $errors = $validator->validate(
+            $username,
+            [new Assert\Length(['min' => 4,'max'=>50])]            
+        );
+        return $errors;
+    }
+    private function checkPassword($password){
+        $validator = $this->container->get('validator');
+        $errors = $validator->validate(
+            $password,
+            [//new Assert\Length(['min' => 6,'max'=>32]),
+             new Assert\Regex('/^\S*(?=\S{6,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/')]  // przynajmniej jedna liczba           
+        );
+        return $errors;
+    }
+    private function checkEmail($email){
+        $validator = $this->container->get('validator');
+        $errors = $validator->validate(
+            $email,
+            [new Assert\Email() ]            
+        );
+        return $errors;
     }
 }
