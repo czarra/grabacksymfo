@@ -1,0 +1,20 @@
+RewriteEngine On
+RewriteBase /
+
+##for apiKey
+RewriteRule .? - [E=Authorization:%{HTTP:Authorization}]
+
+#RewriteCond %{THE_REQUEST} /public/index.php/([^\s?]*) [NC]
+#RewriteRule ^ %1 [L,NE,R=302]
+
+RewriteRule ^bundles/(.*)$ /public/bundles/$1 [R=301,NC,L]
+RewriteRule ^((?!public/).*)$ public/index.php/$1 [L,NC]
+
+<Files ".env">
+        Order Deny,Allow
+        Deny from all
+        Allow from localhost
+        Allow from 127.0.0.1
+</Files>
+
+

@@ -49,7 +49,8 @@ class ApiController extends Controller
         if($code_game && $user){
             $repositoryGame = $this->getDoctrine()->getRepository(Games::class);
             $game = $repositoryGame->findOneByCode($code_game);
-            if($game && $game->isEnabled()){
+            if($game && $game->getCode()===$code_game && $game->isEnabled()){
+                
                 $user_game_id = $this->saveUserGame($game,$user);
                 if($user_game_id){
                     $respons['code'] = $code_game;
