@@ -43,14 +43,17 @@ class ApiController extends Controller
         if($code_game && $user){
             $repositoryGame = $this->getDoctrine()->getRepository(Games::class);
             $game = $repositoryGame->findOneByCode($code_game);
-            if($game && $game->getCode()===$code_game && $game->isEnabled()){
+            if($game 
+                    && $game->getCode()===$code_game 
+                    && $game->isEnabled() 
+                    && $this->getTaskForGame($game)){
                 
                 $user_game = $this->saveUserGame($game,$user);
                 if($user_game){
-                    $gameTask = $this->getOneTaskForGame($game);
-                    if($gameTask){
-                        $this->saveUserGameTask($gameTask, $user);
-                    }
+//                    $gameTask = $this->getOneTaskForGame($game);
+//                    if($gameTask){
+//                        $this->saveUserGameTask($gameTask, $user);
+//                    }
                     $respons['code'] = $code_game;
                     $respons['id'] = $user_game->getId();
                 }else{
@@ -106,7 +109,7 @@ class ApiController extends Controller
 //                }
             }
 //           die;
-            var_dump($tasks);die;
+            //var_dump($tasks);die;
         }
 
         return new JsonResponse($response);
@@ -167,18 +170,35 @@ class ApiController extends Controller
         return $userGame;
     }
 
+    // save to game with first task (transaction)
     private function saveUserGame(Games $game, $user){
         if(!$this->getUserGame($game->getId(), $user->getId())){
-            $em = $this->getDoctrine()->getManager();
-            $game_user = new UserGame();
-            $game_user->setUser($user);
-            $game_user->setGame($game);
-            $em->persist($game_user);
-            $em->flush();
-            return $game_user;
+            $gameTask = $this->getOneTaskForGame($game);
+            if($gameTask && !$this->getUserGameTask($gameTask->getId(), $user->getId())){
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->getConnection()->beginTransaction(); 
+                try {
+                    $game_user_task = new UserGameTask();
+                    $game_user_task->setUser($user);
+                    $game_user_task->setGameTask($gameTask);
+                    $em->persist($game_user_task);
+                    $em->flush();
+
+                    $game_user = new UserGame();
+                    $game_user->setUser($user);
+                    $game_user->setGame($game);
+                    $em->persist($game_user);
+                    $em->flush();
+
+                    $em->getConnection()->commit();
+                    return $game_user;
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                }
+            }    
         }
         return null;
     }
-    
    
 }
