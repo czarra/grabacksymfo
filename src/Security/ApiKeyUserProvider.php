@@ -37,9 +37,7 @@ class ApiKeyUserProvider implements UserProviderInterface
     
     public function getUsernameForApiKey($apiKey)
     {
-        // Look up the username based on the token in the datab
         $userRepository = $this->entityManager->getRepository('App\Application\Sonata\UserBundle\Entity\User');
-      //  $user= $userRepository->findOneBy(array('apiToken'=>'86e38b62a785b6dbf7507a21c6c4d519'));
         $user= $userRepository->findOneBy(array('apiToken'=>$apiKey));
       
         if(!$user){
@@ -57,14 +55,7 @@ class ApiKeyUserProvider implements UserProviderInterface
         $user= $userRepository->findOneBy(array('username'=>$username));
         $user->addRole('ROLE_API');
         return $user;
-        
-//        return new User(
-//            $username,
-//            null,
-//            // the roles for the user - you may choose to determine
-//            // these dynamically somehow based on the user
-//            array('ROLE_API')
-//        );
+
     }
 
     public function refreshUser(UserInterface $user)

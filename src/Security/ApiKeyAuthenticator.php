@@ -38,26 +38,14 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface, Authentica
 
     public function createToken(Request $request, $providerKey)
     {
-        
 
-        // set the only URL where we should look for auth information
-        // and only return the token if we're at that URL
-//        $targetUrl = '/login/check';
-//        if ($request->getPathInfo() !== $targetUrl) {
-//            return;
-//        }
-        //var_dump('safs');die;
-        // look for an apikey query parameter
-        //$apiKey = '2c91c33f4940deab72e032991938608c';//$request->query->get('apikey');
-
-        // or if you want to use an "apikey" header, then do something like this:
         $apiKey = $request->get('apikey');
-
+        if(!empty($_SERVER['Authorization']) && !$apiKey){
+            $apiKey = $_SERVER['Authorization'];
+        } 
+  
         if (!$apiKey) {
             throw new BadCredentialsException();
-
-            // or to just skip api key authentication
-            // return null;
         }
 
         return new PreAuthenticatedToken(
