@@ -71,9 +71,9 @@ class ApiController extends Controller
     public function allUserGamesAction(Request $request){
         $user_id= $this->getUser()->getId();
         $repositoryUserGame = $this->getDoctrine()->getRepository(UserGame::class);
-        $userGame = $repositoryUserGame->findBy(
-                        array( "user"=>$user_id )
-                    );
+        //sort by last add game
+        $userGame = $repositoryUserGame
+                ->findBy(array( "user"=>$user_id ),array("timeStart"=>"DESC"));
         $response=array();
         foreach($userGame as $key=>$value){
             if($value->getGame()->isEnabled()){
