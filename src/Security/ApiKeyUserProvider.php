@@ -40,7 +40,7 @@ class ApiKeyUserProvider implements UserProviderInterface
         $userRepository = $this->entityManager->getRepository('App\Application\Sonata\UserBundle\Entity\User');
         $user= $userRepository->findOneBy(array('apiToken'=>$apiKey));
       
-        if(!$user || !($user->getApiToken()===$apiKey)){
+        if(!$user){
             return null;
         } 
         $username = $user->getUsername();

@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use FOS\UserBundle\Model\UserInterface;
 use App\Entity\Games;
+use App\Application\Sonata\UserBundle\Entity\User;
 use App\Entity\UserGameTask;
 
 class ApiController extends Controller
@@ -44,16 +45,11 @@ class ApiController extends Controller
             $repositoryGame = $this->getDoctrine()->getRepository(Games::class);
             $game = $repositoryGame->findOneByCode($code_game);
             if($game 
-                    && $game->getCode()===$code_game 
                     && $game->isEnabled() 
                     && $this->getTaskForGame($game)){
                 
                 $user_game = $this->saveUserGame($game,$user);
                 if($user_game){
-//                    $gameTask = $this->getOneTaskForGame($game);
-//                    if($gameTask){
-//                        $this->saveUserGameTask($gameTask, $user);
-//                    }
                     $respons['code'] = $code_game;
                     $respons['id'] = $user_game->getId();
                 }else{
@@ -85,7 +81,7 @@ class ApiController extends Controller
                 $data['name']=$value->getGame()->getName();
                 $data['code']=$value->getGame()->getCode();
                 $data['description']=$value->getGame()->getDescription();
-                $response[] = $data;
+                $response['data'][] = $data;
             }
         }
         return new JsonResponse($response);
@@ -115,7 +111,44 @@ class ApiController extends Controller
         return new JsonResponse($response);
     }
     
-    private function saveUserGameTask(GameTasks $gameTask, $user){
+    /**
+     * @Route("/api/get-info-game")
+     */
+    public function getInfoGameAction(Request $request){
+        $response = array();
+        $code = $request->get('code');
+        if($code){
+            $game = $this->getGameByCode($code);
+            if($game){
+                $tasks = $this->getTaskForGame($game); //all task by sequence
+                $is_tasks = count($tasks);
+                $user_task = $this->getAllUserTaskByGame($game, $this->getUser());
+                $is_user_task = count($user_task);
+                $current_task = $this->getCurrentTask($game, $this->getUser());
+                $response['data']['id'] =$game->getId();
+                $response['data']['code'] =$game->getCode();
+                $response['data']['name'] =$game->getName();
+                $response['data']['description'] =$game->getDescription();
+                $response['data']['isCurrentTask'] = count($current_task);//0 v 1
+                $response['data']['allTask'] =$is_tasks;
+                $response['data']['userTask'] =$is_user_task;
+            }
+        }  
+        return new JsonResponse($response);
+    }
+    
+    
+    private function getAllUserTaskByGame(Games $game,User $user){
+        $repositoryGameTask = $this->getDoctrine()->getRepository(GameTasks::class);
+        return $repositoryGameTask->findAllTaskByGameAndUser($game, $user);
+    }
+    
+    private function getCurrentTask(Games $game,User $user){
+        $repositoryGameTask = $this->getDoctrine()->getRepository(GameTasks::class);
+        return $repositoryGameTask->findCurrentTaskByGameAndUser($game,$user);
+    }
+    
+    private function saveUserGameTask(GameTasks $gameTask, User $user){
         if(!$this->getUserGameTask($gameTask->getId(), $user->getId())){
             $em = $this->getDoctrine()->getManager();
             $game_user_task = new UserGameTask();
@@ -150,6 +183,12 @@ class ApiController extends Controller
         return $game;
     }
     
+    private function getGameByCode($game_code){
+        $repositoryGame = $this->getDoctrine()->getRepository(Games::class);
+        $game = $repositoryGame->findOneByCode($game_code);
+        return $game;
+    }
+    
     private function getUserGameTask($game_task_id, $user_id){
         $repositoryUserGame = $this->getDoctrine()->getRepository(UserGameTask::class);
         $userGame = $repositoryUserGame->findOneBy(
@@ -171,7 +210,7 @@ class ApiController extends Controller
     }
 
     // save to game with first task (transaction)
-    private function saveUserGame(Games $game, $user){
+    private function saveUserGame(Games $game, User $user){
         if(!$this->getUserGame($game->getId(), $user->getId())){
             $gameTask = $this->getOneTaskForGame($game);
             if($gameTask && !$this->getUserGameTask($gameTask->getId(), $user->getId())){
