@@ -129,7 +129,7 @@ class ApiController extends Controller
                 $response['data']['code'] =$game->getCode();
                 $response['data']['name'] =$game->getName();
                 $response['data']['description'] =$game->getDescription();
-                $response['data']['isCurrentTask'] = count($current_task);//0 v 1
+                $response['data']['isCurrentTask'] = ($current_task)?1:0;//0 v 1
                 $response['data']['allTask'] =$is_tasks;
                 $response['data']['userTask'] =$is_user_task;
             }
