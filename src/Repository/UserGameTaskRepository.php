@@ -16,6 +16,7 @@ namespace App\Repository;
 use App\Entity\UserGameTask;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+
 class UserGameTaskRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
