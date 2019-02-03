@@ -70,24 +70,8 @@ class UserAdmin extends BaseUserAdmin
                         'required' => false,
                     ])
                 ->end()
-                ->with('Keys')
-                    ->add('token', null, ['required' => false])
-                    ->add('twoStepVerificationCode', null, ['required' => false])
-                ->end()
             ->end()
         ;
-        
-//        $formMapper
-//            ->add('username')
-//            ->add('email')
-//            ->add('groups')
-//            ->add('plainPassword', TextType::class, [
-//                        'required' => (!$this->getSubject() || null === $this->getSubject()->getId()),
-//                    ])
-//            ->add('enabled')
-//            ->add('createdAt')
-//        ;
-
     }
 
     /**
@@ -119,7 +103,6 @@ class UserAdmin extends BaseUserAdmin
                 'actions' => array(
                     'show' => array(),
                     'edit' => array(),
-                   // 'delete' => array(),
                 )
             ))
         ;
