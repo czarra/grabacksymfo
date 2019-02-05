@@ -100,7 +100,7 @@ class UserGame
     
     public function setTimeStop()
     {
-        $this->timeStop = new \DateTime("now");;
+        $this->timeStop = new \DateTime("now");
     }
    
     

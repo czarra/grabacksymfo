@@ -153,7 +153,7 @@ class ApiController extends Controller
                 $all_game_tasks=$this->getTaskForGame($current_game_task->getGame());
                 $is_next = false;
                 $next_game_task = null;
-                foreach($all_tasks as $key=>$one_game_task){
+                foreach($all_game_tasks as $key=>$one_game_task){
                     if($is_next){
                         $next_game_task=$one_game_task;
                         break;
@@ -270,9 +270,9 @@ class ApiController extends Controller
     
     //end task 
     //add next task
-    private function saveAndUpdataGameTask(GameTasks $game, User $user, GameTask $game_task, GameTasks $next_game_task){
+    private function saveAndUpdataGameTask(Games $game, User $user, GameTasks $game_task, GameTasks $next_game_task){
         if($this->getUserGame($game->getId(), $user->getId())){
-            $current_user_game_task = getUserGameTask($game_task,$user);
+            $current_user_game_task = $this->getUserGameTask($game_task,$user);
             if($current_user_game_task && !$this->getUserGameTask($next_game_task, $user)){
                 
                 $em = $this->getDoctrine()->getManager();
@@ -330,10 +330,10 @@ class ApiController extends Controller
         return null;
     }
     
-    private function saveEndGame(GameTasks $game, User $user, GameTask $game_task){
+    private function saveEndGame(Games $game, User $user, GameTasks $game_task){
         $user_game = $this->getUserGame($game->getId(), $user->getId());
         if($user_game){
-            $current_user_game_task = getUserGameTask($game_task,$user);
+            $current_user_game_task = $this->getUserGameTask($game_task,$user);
             if($current_user_game_task){
                 
                 $em = $this->getDoctrine()->getManager();

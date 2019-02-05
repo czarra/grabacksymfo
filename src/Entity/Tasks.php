@@ -103,7 +103,6 @@ class Tasks
             $a = $longitude - $this->longitude;
             $b = $latitude - $this->latitude;  
             $distance =sqrt(pow(($a), 2)+pow(($b), 2));
-            var_dump($distance);
             if($distance<self::MAX_DISTANCE){
                 return true;
             }
