@@ -165,8 +165,18 @@ class ApiController extends Controller
                 if($next_game_task){//is next task
                    //!!!!! get data 
                     $save_next_game_task = $this->saveAndUpdataGameTask($game, $user, $current_game_task, $next_game_task);
+                    if($save_next_game_task){
+                        $new_task = $save_next_game_task->getGameTask()->getTask();
+                        $response['data']['task_id']=$new_task->getId();
+                        $response['data']['name']=$new_task->getName();
+                        $response['data']['description']=$new_task->getDescription();
+                        $response['data']['end'] = false;
+                    }
                 } else{ // game end
                     $user_game = $this->saveEndGame($game, $user,$current_game_task);
+                    if($user_game){
+                        $response['data']['end'] = true;
+                    }
                 }
                 //
             }
