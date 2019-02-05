@@ -98,9 +98,9 @@ class UserGameTask
         return $this->timeStop;
     }
     
-    public function setTimeStop($timeStop)
+    public function setTimeStop()
     {
-        $this->timeStop = $timeStop;
+        $this->timeStop = new \DateTime("now");
     }
    
     

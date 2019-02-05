@@ -88,26 +88,33 @@ class ApiController extends Controller
     }
     
     /**
-     * @Route("/api/get-next-task")
+     * @Route("/api/get-current-task")
      */
-    public function getNextTaskAction(Request $request){
+    public function getCurrentTaskAction(Request $request){
         $response=array();
-        $user_id= $this->getUser()->getId();
-        $game_id = $request->get('id');
-        $game = $this->getGameById($game_id);
+        $user= $this->getUser();
+        $game_code = $request->get('code');
+        $game = $this->getGameByCode($game_code);
         if($game){
-            $userGame = $this->getUserGame($game_id,$user_id);
-            if($userGame && is_null($userGame->getTimeStop())){
-                $tasks = $this->getTaskForGame($game);
-//                foreach($tasks as $a){
-//                    var_dump($a->getSequence());
-//                    
-//                }
-            }
-//           die;
-            //var_dump($tasks);die;
+            $response = $this->currentTask($game,$user);
         }
-
+        return new JsonResponse($response);
+    }
+    
+      /**
+     * @Route("/api/check-task")
+     */
+    public function checkTaskAction(Request $request){
+        $response=array();
+        $game_code = $request->get('code');
+        $task_id = $request->get('task_id');
+        $longitude = $request->get('longitude');
+        $latitude = $request->get('latitude');
+        $game = $this->getGameByCode($game_code);
+        $user = $this->getUser();
+        if($game){
+            $response = $this->checkAndSetNextTask($game, $user, $task_id, $longitude, $latitude);  
+        }
         return new JsonResponse($response);
     }
     
@@ -124,12 +131,12 @@ class ApiController extends Controller
                 $is_tasks = count($tasks);
                 $user_task = $this->getAllUserTaskByGame($game, $this->getUser());
                 $is_user_task = count($user_task);
-                $current_task = $this->getCurrentTask($game, $this->getUser());
+                $current_game_task = $this->getCurrentGameTask($game, $this->getUser());
                 $response['data']['id'] =$game->getId();
                 $response['data']['code'] =$game->getCode();
                 $response['data']['name'] =$game->getName();
                 $response['data']['description'] =$game->getDescription();
-                $response['data']['isCurrentTask'] = ($current_task)?1:0;//0 v 1
+                $response['data']['isCurrentTask'] = ($current_game_task)?1:0;//0 v 1
                 $response['data']['allTask'] =$is_tasks;
                 $response['data']['userTask'] =$is_user_task;
             }
@@ -137,19 +144,70 @@ class ApiController extends Controller
         return new JsonResponse($response);
     }
     
+    private function checkAndSetNextTask(Games $game, User $user,$task_id,$longitude,$latitude){
+        $response=array();
+        $current_game_task = $this->getCurrentGameTask($game, $user);
+        if($current_game_task && $current_game_task->getTask()->getId()==$task_id){
+            $response['data']['status']= $current_game_task->getTask()->checkifGoodPlace($longitude,$latitude);
+            if($response['data']['status']){// set next task
+                $all_game_tasks=$this->getTaskForGame($current_game_task->getGame());
+                $is_next = false;
+                $next_game_task = null;
+                foreach($all_tasks as $key=>$one_game_task){
+                    if($is_next){
+                        $next_game_task=$one_game_task;
+                        break;
+                    }
+                    if($one_game_task->getTask()->getId()== $task_id){
+                       $is_next = true; 
+                    }
+                }
+                if($next_game_task){//is next task
+                   //!!!!! get data 
+                    $save_next_game_task = $this->saveAndUpdataGameTask($game, $user, $current_game_task, $next_game_task);
+                } else{ // game end
+                    $user_game = $this->saveEndGame($game, $user,$current_game_task);
+                }
+                //
+            }
+        }
+        return $response;
+    }
     
+    private function responseCurrentTask(GameTasks $gameTask){
+        $task = $gameTask->getTask();
+        $response['data']['task_id']=$task->getId();
+        $response['data']['name']=$task->getName();
+        $response['data']['description']=$task->getDescription();
+        
+        return $response;
+    }
+    
+    private function currentTask(Games $game, User $user){
+        $response=array();
+        $userGame = $this->getUserGame($game->getId(),$user->getId());
+        if($userGame && is_null($userGame->getTimeStop())){
+             $current_game_task = $this->getCurrentGameTask($game, $user);
+             if($current_game_task){
+                 $response = $this->responseCurrentTask($current_game_task);
+             }
+        }
+        return $response;    
+    }
+
+
     private function getAllUserTaskByGame(Games $game,User $user){
         $repositoryGameTask = $this->getDoctrine()->getRepository(GameTasks::class);
         return $repositoryGameTask->findAllTaskByGameAndUser($game, $user);
     }
     
-    private function getCurrentTask(Games $game,User $user){
+    private function getCurrentGameTask(Games $game,User $user){
         $repositoryGameTask = $this->getDoctrine()->getRepository(GameTasks::class);
         return $repositoryGameTask->findCurrentTaskByGameAndUser($game,$user);
     }
     
     private function saveUserGameTask(GameTasks $gameTask, User $user){
-        if(!$this->getUserGameTask($gameTask->getId(), $user->getId())){
+        if(!$this->getUserGameTask($gameTask, $user)){
             $em = $this->getDoctrine()->getManager();
             $game_user_task = new UserGameTask();
             $game_user_task->setUser($user);
@@ -189,11 +247,11 @@ class ApiController extends Controller
         return $game;
     }
     
-    private function getUserGameTask($game_task_id, $user_id){
+    private function getUserGameTask(GameTasks $gameTask, User $user){
         $repositoryUserGame = $this->getDoctrine()->getRepository(UserGameTask::class);
         $userGame = $repositoryUserGame->findOneBy(
-                        array("gameTask"=>$game_task_id,
-                            "user"=>$user_id
+                        array("gameTask"=>$gameTask,
+                            "user"=>$user
                         )
                     );
         return $userGame;
@@ -208,12 +266,44 @@ class ApiController extends Controller
                     );
         return $userGame;
     }
+    
+    
+    //end task 
+    //add next task
+    private function saveAndUpdataGameTask(GameTasks $game, User $user, GameTask $game_task, GameTasks $next_game_task){
+        if($this->getUserGame($game->getId(), $user->getId())){
+            $current_user_game_task = getUserGameTask($game_task,$user);
+            if($current_user_game_task && !$this->getUserGameTask($next_game_task, $user)){
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->getConnection()->beginTransaction(); 
+                try {
+                    $current_user_game_task->setTimeStop();
+                    $em->persist($current_user_game_task);
+                    $em->flush();
+                    
+                    
+                    $game_user_task = new UserGameTask();
+                    $game_user_task->setUser($user);
+                    $game_user_task->setGameTask($next_game_task);
+                    $em->persist($game_user_task);
+                    $em->flush();
+
+                    $em->getConnection()->commit();
+                    return $game_user_task;
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                }
+            }    
+        }
+        return null;
+    }
 
     // save to game with first task (transaction)
     private function saveUserGame(Games $game, User $user){
         if(!$this->getUserGame($game->getId(), $user->getId())){
             $gameTask = $this->getOneTaskForGame($game);
-            if($gameTask && !$this->getUserGameTask($gameTask->getId(), $user->getId())){
+            if($gameTask && !$this->getUserGameTask($gameTask, $user)){
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->getConnection()->beginTransaction(); 
@@ -232,6 +322,34 @@ class ApiController extends Controller
 
                     $em->getConnection()->commit();
                     return $game_user;
+                } catch (Exception $e) {
+                    $em->getConnection()->rollBack();
+                }
+            }    
+        }
+        return null;
+    }
+    
+    private function saveEndGame(GameTasks $game, User $user, GameTask $game_task){
+        $user_game = $this->getUserGame($game->getId(), $user->getId());
+        if($user_game){
+            $current_user_game_task = getUserGameTask($game_task,$user);
+            if($current_user_game_task){
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->getConnection()->beginTransaction(); 
+                try {
+                    $current_user_game_task->setTimeStop();
+                    $em->persist($current_user_game_task);
+                    $em->flush();
+                    
+                    
+                    $user_game->setTimeStop();
+                    $em->persist($user_game);
+                    $em->flush();
+
+                    $em->getConnection()->commit();
+                    return $user_game;
                 } catch (Exception $e) {
                     $em->getConnection()->rollBack();
                 }

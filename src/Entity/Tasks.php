@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tasks
 {
+    const MAX_DISTANCE = 0.1;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -97,6 +98,20 @@ class Tasks
         $this->description = $description;
     }
     
+    public function checkifGoodPlace($longitude,$latitude): bool{
+        if(is_numeric($longitude) && is_numeric($latitude)){
+            $a = $longitude - $this->longitude;
+            $b = $latitude - $this->latitude;  
+            $distance =sqrt(pow(($a), 2)+pow(($b), 2));
+            var_dump($distance);
+            if($distance<self::MAX_DISTANCE){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public function __toString() {
         return "Zadanie : ".$this->name ;
     }
