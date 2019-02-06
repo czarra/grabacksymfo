@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tasks
 {
-    const MAX_DISTANCE = 0.1;
+    const MAX_DISTANCE = 0.001;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

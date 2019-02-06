@@ -142,7 +142,7 @@ class LoginRegisterApiControler extends Controller{
         // Check if the user exists to prevent Integrity constraint violation error in the insertion
         if($email_exist || $username_exist){
             $response['ok']=false;
-            $response['error']=array('message'=>'User exist!');
+            $response['error']=array('username'=>'User exist!');
             return  $response;
         }
 
