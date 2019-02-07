@@ -223,7 +223,11 @@ class Games
    }
 
    public function getPathToImageSRC(){
-       return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
+       if(file_exists($this->getPathToImage()) 
+               && is_array(getimagesize($this->getPathToImage()))){
+            return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
+       } 
+       return null;
    }
 
 }

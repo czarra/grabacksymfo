@@ -185,31 +185,26 @@ class Tasks
    /**
     * Lifecycle callback to upload the file to the server.
     */
-   public function lifecycleFileUpload()
-   {
-       $this->upload();
-   }
-   
-   public function getPath(){
-       return self::SERVER_PATH_TO_IMAGE_FOLDER."/".$this->code;
-   }
+    public function lifecycleFileUpload()
+    {
+        $this->upload();
+    }
 
-   public function getPathToImage(){
-       return $this->getPath()."/".$this->filename;
-   }
+    public function getPath(){
+        return self::SERVER_PATH_TO_IMAGE_FOLDER."/".$this->code;
+    }
 
-   public function getPathToImageSRC(){
-       return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
-   }
+    public function getPathToImage(){
+        return $this->getPath()."/".$this->filename;
+    }
 
-   /**
-    * Updates the hash value to force the preUpdate and postUpdate events to fire.
-    */
-   public function refreshUpdated()
-   {
-     
-   }
-
+    public function getPathToImageSRC(){
+       if(file_exists($this->getPathToImage()) 
+               && is_array(getimagesize($this->getPathToImage()))){
+            return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
+       } 
+       return null;
+    }
 
     public function __toString() {
         return "Zadanie : ".$this->name ;
