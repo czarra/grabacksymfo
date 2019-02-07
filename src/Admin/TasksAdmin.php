@@ -22,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class TasksAdmin extends AbstractAdmin
 {
@@ -31,7 +32,14 @@ class TasksAdmin extends AbstractAdmin
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('longitude')
                 ->add('latitude')
-                ->add('description', TextareaType::class, array('label' => 'Opis'));
+                ->add('description', TextareaType::class, array('label' => 'Opis'))
+                ->add('file', FileType::class, [
+                        'required' => false
+                    ])
+                ->add('filename', TextType::class, array(
+                    'label' => 'Nazwa pliku',
+                    'required' => false,
+                    'disabled'  => true,));
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -50,6 +58,9 @@ class TasksAdmin extends AbstractAdmin
                 ->add('longitude')
                 ->add('latitude')
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
+                 ->add('filename',TextType::class, array(
+                     'label' => 'Plik'
+                    ))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
                         'edit' => array(),
@@ -64,7 +75,10 @@ class TasksAdmin extends AbstractAdmin
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
                 ->add('longitude')
                 ->add('latitude')
-                ->add('description', TextType::class, array('label' => 'Opis'));
+                ->add('description', TextType::class, array('label' => 'Opis'))
+                 ->add('filename',TextType::class, array(
+                     'label' => 'Plik'
+                    ));
         
     }
     

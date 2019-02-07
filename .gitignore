@@ -3,7 +3,9 @@
 /.env.local
 /.env.*.local
 /public/bundles/
+/public/images/
 /var/
+.env
 /vendor/
 ###< symfony/framework-bundle ###
 
