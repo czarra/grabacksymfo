@@ -102,8 +102,33 @@ class UserGame
     {
         $this->timeStop = new \DateTime("now");
     }
-   
     
+    public function getTime(){
+        $allTime = "";
+        if(!is_null($this->timeStop)){
+            $diff = $this->timeStop->diff($this->timeStart);
+            $years = $diff->format("%y");
+            $month = $diff->format("%m");
+            $days = $diff->format("%d");
+            $time = $diff->format("%H:%I:%S");
+            $allTime = "";
+            if(!empty($years)){
+               $allTime .= $years."y ";
+            }
+            if(!empty($month)){
+               $allTime .= $month."m ";
+            }
+            if(!empty($days)){
+               $allTime .= $days."d ";
+            }
+            if(!empty($time)){
+               $allTime .= $time."h ";
+            }
+            //var_dump(date_diff($this->timeStop,$this->timeStart));
+        }
+        return $allTime;
+    }
+
     public function __toString() {
         return "Użytkownik : ".$this->user ." Zadnie : ". $this->game;
     }

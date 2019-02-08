@@ -40,7 +40,10 @@ class UserGameAdmin extends AbstractAdmin
     {
         
         $datagridMapper
-                ->add('timeStart', null, array('label' => 'Start'));
+                ->add('game',null, array('label' => 'Gra'))
+                ->add('user', null, array('label' => 'User')) 
+                ->add('timeStart', null, array('label' => 'Start'))
+                ->add('timeStop', null, array('label' => 'Stop'));
 
     }
 
@@ -49,10 +52,11 @@ class UserGameAdmin extends AbstractAdmin
 
          
         $listMapper
-                ->add('game', TextType::class, array('label' => 'Gra'))
-                ->add('user', TextType::class, array('label' => 'User') )
+                ->add('game', TextType::class, array('label' => 'Gra', 'sortable' => 'game.name'))
+                ->add('user', TextType::class, array('label' => 'User', 'sortable' => 'user.name'))
                 ->add('timeStart', null, array('label' => 'Start'))
                 ->add('timeStop', null, array('label' => 'Stop'))
+                ->add('time', null, array('label' => 'Czas'))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
                       //  'edit' => array(),
@@ -69,7 +73,8 @@ class UserGameAdmin extends AbstractAdmin
             ->add('game', TextType::class, array('label' => 'Gra'))
             ->add('user', TextType::class, array('label' => 'User') )
             ->add('timeStart', null, array('label' => 'Start'))
-            ->add('timeStop', null, array('label' => 'Stop'));
+            ->add('timeStop', null, array('label' => 'Stop'))
+            ->add('time', null, array('label' => 'Czas'));
         
         
     }
@@ -90,10 +95,9 @@ class UserGameAdmin extends AbstractAdmin
     
     public function createQuery($context = 'list')
     {
-
-     
         $query = parent::createQuery($context);
-
+       // $query->addSelect("TIMEDIFF(time_stop,time_start) as timsss");
+        //$query->andWhere('o.timeStop IS NOT NULL');
         return $query;
     }
     

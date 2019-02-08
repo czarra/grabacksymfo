@@ -140,6 +140,8 @@ class ApiController extends Controller
                 $response['data']['isCurrentTask'] = ($current_game_task)?1:0;//0 v 1
                 $response['data']['allTask'] =$is_tasks;
                 $response['data']['userTask'] =$is_user_task;
+                $userGame = $this->getUserGame($game->getId(),$this->getUser()->getId());
+                $response['data']['time'] =$userGame->getTime();
             }
         }  
         return new JsonResponse($response);
