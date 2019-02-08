@@ -108,7 +108,7 @@ class Games
     
     public function getFilename()
     {
-        return $this->filename;
+        return $this->getPathToImageSRC();///$this->filename;
     }
     
     public function setFilename($filename)
@@ -224,8 +224,9 @@ class Games
 
    public function getPathToImageSRC(){
        if(file_exists($this->getPathToImage()) 
-               && is_array(getimagesize($this->getPathToImage()))){
-            return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
+               && is_array(getimagesize($this->getPathToImage())) 
+               && !empty($_SERVER['HTTP_HOST'])){
+            return "http://".$_SERVER['HTTP_HOST']."/".self::PATH_TO_IMAGE_FOLDER."/".$this->code."/".$this->filename;
        } 
        return null;
    }

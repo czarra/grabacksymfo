@@ -117,7 +117,7 @@ class Tasks
     
     public function getFilename()
     {
-        return $this->filename;
+        return $this->getPathToImageSRC();///$this->filename;
     }
     
     public function setFilename($filename)
@@ -191,7 +191,7 @@ class Tasks
     }
 
     public function getPath(){
-        return self::SERVER_PATH_TO_IMAGE_FOLDER."/".$this->code;
+        return self::SERVER_PATH_TO_IMAGE_FOLDER."/".$this->id;
     }
 
     public function getPathToImage(){
@@ -200,11 +200,12 @@ class Tasks
 
     public function getPathToImageSRC(){
        if(file_exists($this->getPathToImage()) 
-               && is_array(getimagesize($this->getPathToImage()))){
-            return self::PATH_TO_IMAGE_FOLDER."/".$this->filename;
+               && is_array(getimagesize($this->getPathToImage())) 
+               && !empty($_SERVER['HTTP_HOST'])){
+            return "http://".$_SERVER['HTTP_HOST']."/".self::PATH_TO_IMAGE_FOLDER."/".$this->id."/".$this->filename;
        } 
        return null;
-    }
+   }
 
     public function __toString() {
         return "Zadanie : ".$this->name ;

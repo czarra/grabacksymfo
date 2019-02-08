@@ -135,6 +135,7 @@ class ApiController extends Controller
                 $response['data']['id'] =$game->getId();
                 $response['data']['code'] =$game->getCode();
                 $response['data']['name'] =$game->getName();
+                $response['data']['img_url'] =$game->getPathToImageSRC();
                 $response['data']['description'] =$game->getDescription();
                 $response['data']['isCurrentTask'] = ($current_game_task)?1:0;//0 v 1
                 $response['data']['allTask'] =$is_tasks;
@@ -170,6 +171,7 @@ class ApiController extends Controller
                         $response['data']['task_id']=$new_task->getId();
                         $response['data']['name']=$new_task->getName();
                         $response['data']['description']=$new_task->getDescription();
+                        $response['data']['img_url'] = $new_task->getPathToImageSRC();
                         $response['data']['end'] = false;
                     }
                 } else{ // game end
@@ -189,6 +191,7 @@ class ApiController extends Controller
         $response['data']['task_id']=$task->getId();
         $response['data']['name']=$task->getName();
         $response['data']['description']=$task->getDescription();
+        $response['data']['img_url'] = $task->getPathToImageSRC();
         
         return $response;
     }

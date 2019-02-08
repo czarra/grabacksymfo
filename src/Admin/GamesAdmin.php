@@ -96,7 +96,7 @@ class GamesAdmin extends AbstractAdmin
 //        $collection->remove('show');
     }
     
-      public function prePersist($image)
+    public function prePersist($image)
     {
         $this->manageFileUpload($image);
     }

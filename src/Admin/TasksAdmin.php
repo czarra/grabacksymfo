@@ -23,6 +23,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+
 
 class TasksAdmin extends AbstractAdmin
 {
@@ -30,8 +32,8 @@ class TasksAdmin extends AbstractAdmin
     {
         $formMapper
                 ->add('name', TextType::class, array('label' => 'Nazwa'))
-                ->add('longitude')
-                ->add('latitude')
+                ->add('longitude', NumberType::class, array('scale' => 7))
+                ->add('latitude', NumberType::class, array('scale' => 7))
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
                 ->add('file', FileType::class, [
                         'required' => false
@@ -86,5 +88,22 @@ class TasksAdmin extends AbstractAdmin
     {
         $collection->remove('delete');
 //        $collection->remove('show');
+    }
+    
+    public function prePersist($image)
+    {
+        $this->manageFileUpload($image);
+    }
+
+    public function preUpdate($image)
+    {
+        $this->manageFileUpload($image);
+    }
+
+    private function manageFileUpload($image)
+    {
+        if ($image->getFile()) {
+            $image->upload();
+        }
     }
 }
