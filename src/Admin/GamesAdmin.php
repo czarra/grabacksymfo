@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class GamesAdmin extends AbstractAdmin
 {
@@ -33,7 +34,15 @@ class GamesAdmin extends AbstractAdmin
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
                 ->add('enabled', ChoiceType::class, array(
                     'choices' => \App\Entity\Games::getEnabledChoices(),
-                     'label' => 'Aktywna'));
+                     'label' => 'Aktywna'))
+                ->add('file', FileType::class, [
+                        'required' => false
+                    ])
+                ->add('filename', TextType::class, array(
+                    'label' => 'Nazwa pliku',
+                    'required' => false,
+                    'disabled'  => true,));
+                
          
     }
 
@@ -54,12 +63,16 @@ class GamesAdmin extends AbstractAdmin
                 ->add('enabled', TextType::class, array(
                     'label' => 'Aktywna'
                    ))
+                ->add('filename',TextType::class, array(
+                     'label' => 'Plik'
+                    ))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
                         'edit' => array(),
                         'delete' => array(),
                         ),'label' => 'Akcje')
                     );
+                
     }
     
     protected function configureShowFields(ShowMapper $showMapper)
@@ -70,6 +83,9 @@ class GamesAdmin extends AbstractAdmin
                 ->add('description', TextType::class, array('label' => 'Opis'))
                 ->add('enabled',TextType::class, array(
                      'label' => 'Aktywna'
+                    ))
+                ->add('filename',TextType::class, array(
+                     'label' => 'Plik'
                     ));
         
     }
@@ -78,5 +94,22 @@ class GamesAdmin extends AbstractAdmin
     {
         $collection->remove('delete');
 //        $collection->remove('show');
+    }
+    
+    public function prePersist($image)
+    {
+        $this->manageFileUpload($image);
+    }
+
+    public function preUpdate($image)
+    {
+        $this->manageFileUpload($image);
+    }
+
+    private function manageFileUpload($image)
+    {
+        if ($image->getFile()) {
+            $image->upload();
+        }
     }
 }

@@ -37,6 +37,8 @@ class GameTasksAdmin extends AbstractAdmin
     {
         
         $datagridMapper
+                ->add('game', null, array('required' => true,'label' => 'Gra'))
+                ->add('task', null, array('required' => true,'label' => 'Zadanie') )
                 ->add('sequence', null, array('label' => 'Kolejność'));
 
     }
@@ -46,8 +48,8 @@ class GameTasksAdmin extends AbstractAdmin
 
          
         $listMapper
-                ->add('game', TextType::class, array('label' => 'Gra'))
-                ->add('task', TextType::class, array('label' => 'Zadanie'))
+                ->add('game', TextType::class, array('label' => 'Gra', 'sortable' => 'game.name',))
+                ->add('task', TextType::class, array('label' => 'Zadanie',  'sortable' => 'task.name',))
                 ->add('sequence', TextType::class, array('label' => 'Kolejność'))
                 ->add('_action', 'actions', array('actions' => array(
                         'show' => array(),
