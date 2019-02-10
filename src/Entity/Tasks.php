@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Tasks
 {
-    const MAX_DISTANCE = 0.001;
+    const MAX_DISTANCE = 0.0005;// 0.0005~35 M 
     const PATH_TO_IMAGE_FOLDER = 'images/tasks';
     const SERVER_PATH_TO_IMAGE_FOLDER = __DIR__.'/../../public/'.self::PATH_TO_IMAGE_FOLDER;
     
@@ -130,6 +130,7 @@ class Tasks
             $a = $longitude - $this->longitude;
             $b = $latitude - $this->latitude;  
             $distance =sqrt(pow(($a), 2)+pow(($b), 2));
+            var_dump($distance*100);die;
             if($distance<self::MAX_DISTANCE){
                 return true;
             }
