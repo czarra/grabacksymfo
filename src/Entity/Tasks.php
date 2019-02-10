@@ -25,7 +25,8 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Tasks
 {
-    const MAX_DISTANCE = 0.0005;// 0.0005~35 M 
+    const MAX_DISTANCE = 0.0005;// 0.0005 ~ 35m (Wroclaw)
+    //equator 1 ~ 111 196,672m; 0.0005 ~ 55m
     const PATH_TO_IMAGE_FOLDER = 'images/tasks';
     const SERVER_PATH_TO_IMAGE_FOLDER = __DIR__.'/../../public/'.self::PATH_TO_IMAGE_FOLDER;
     
