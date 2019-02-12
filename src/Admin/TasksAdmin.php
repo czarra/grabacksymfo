@@ -36,7 +36,8 @@ class TasksAdmin extends AbstractAdmin
                 ->add('latitude', NumberType::class, array('scale' => 7))
                 ->add('description', TextareaType::class, array('label' => 'Opis'))
                 ->add('file', FileType::class, [
-                        'required' => false
+                        'required' => false,
+                        'label' => 'File (max size 2M)'
                     ])
                 ->add('filename', TextType::class, array(
                     'label' => 'Nazwa pliku',

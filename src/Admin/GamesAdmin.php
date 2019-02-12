@@ -36,7 +36,8 @@ class GamesAdmin extends AbstractAdmin
                     'choices' => \App\Entity\Games::getEnabledChoices(),
                      'label' => 'Aktywna'))
                 ->add('file', FileType::class, [
-                        'required' => false
+                        'required' => false,
+                        'label' => 'File (max size 2M)'
                     ])
                 ->add('filename', TextType::class, array(
                     'label' => 'Nazwa pliku',
