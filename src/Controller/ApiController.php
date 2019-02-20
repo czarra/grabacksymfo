@@ -88,6 +88,48 @@ class ApiController extends Controller
     }
     
     /**
+     * @Route("/api/all-user-end-games")
+     */
+    public function allUserEndGamesAction(Request $request){
+        $user= $this->getUser();
+        $repositoryUserGame = $this->getDoctrine()->getRepository(UserGame::class);
+        $userGame = $repositoryUserGame
+                ->findAllEndGameByUser($user );
+        $response=array();
+        foreach($userGame as $key=>$value){
+            if($value->getGame()->isEnabled()){
+                $data['id']=$value->getGame()->getId();
+                $data['name']=$value->getGame()->getName();
+                $data['code']=$value->getGame()->getCode();
+                $data['description']=$value->getGame()->getDescription();
+                $response['data'][] = $data;
+            }
+        }
+        return new JsonResponse($response);
+    }
+    
+     /**
+     * @Route("/api/all-user-not-end-games")
+     */
+    public function allUserNotEndGamesAction(Request $request){
+        $user= $this->getUser();
+        $repositoryUserGame = $this->getDoctrine()->getRepository(UserGame::class);
+        $userGame = $repositoryUserGame
+                ->findAllNotEndGameByUser($user );
+        $response=array();
+        foreach($userGame as $key=>$value){
+            if($value->getGame()->isEnabled()){
+                $data['id']=$value->getGame()->getId();
+                $data['name']=$value->getGame()->getName();
+                $data['code']=$value->getGame()->getCode();
+                $data['description']=$value->getGame()->getDescription();
+                $response['data'][] = $data;
+            }
+        }
+        return new JsonResponse($response);
+    }
+    
+    /**
      * @Route("/api/get-current-task")
      */
     public function getCurrentTaskAction(Request $request){

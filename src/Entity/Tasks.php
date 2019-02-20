@@ -25,8 +25,7 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Tasks
 {
-    const MAX_DISTANCE = 0.0005;// 0.0005 ~ 35m (Wroclaw)
-    //equator 1 ~ 111 196,672m; 0.0005 ~ 55m
+    const MAX_DISTANCE = 0.0005;// 0.0005~35 M 
     const PATH_TO_IMAGE_FOLDER = 'images/tasks';
     const SERVER_PATH_TO_IMAGE_FOLDER = __DIR__.'/../../public/'.self::PATH_TO_IMAGE_FOLDER;
     
@@ -200,7 +199,8 @@ class Tasks
     }
 
     public function getPathToImageSRC(){
-       if(file_exists($this->getPathToImage()) 
+       if(!empty($this->filename) 
+               && file_exists($this->getPathToImage()) 
                && is_array(getimagesize($this->getPathToImage())) 
                && !empty($_SERVER['HTTP_HOST'])){
             return "http://".$_SERVER['HTTP_HOST']."/".self::PATH_TO_IMAGE_FOLDER."/".$this->id."/".$this->filename;

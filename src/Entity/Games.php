@@ -223,7 +223,8 @@ class Games
    }
 
    public function getPathToImageSRC(){
-       if(file_exists($this->getPathToImage()) 
+        if(!empty($this->filename) 
+               && file_exists($this->getPathToImage()) 
                && is_array(getimagesize($this->getPathToImage())) 
                && !empty($_SERVER['HTTP_HOST'])){
             return "http://".$_SERVER['HTTP_HOST']."/".self::PATH_TO_IMAGE_FOLDER."/".$this->code."/".$this->filename;
