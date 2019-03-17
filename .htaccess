@@ -7,9 +7,12 @@ RewriteRule .? - [E=Authorization:%{HTTP:Authorization}]
 #RewriteCond %{THE_REQUEST} /public/index.php/([^\s?]*) [NC]
 #RewriteRule ^ %1 [L,NE,R=302]
 
-RewriteRule ^bundles/(.*)$ /public/bundles/$1 [R=301,NC,L]
-RewriteRule ^images/(.*)$ /public/images/$1 [NC,L]
-RewriteRule ^((?!public/).*)$ public/index.php/$1 [L,NC]
+RewriteRule ^public/bundles/(.*)$ /gra/public/bundles/$1 [R=301,NC,L]
+RewriteRule ^images/(.*)$ /gra/public/images/$1 [NC,L]
+RewriteRule ^admin((?!public/).*)$ gra/public/index.php/$1 [L,NC]
+RewriteRule ^api(.*)$ gra/public/index.php/$1 [L,NC]
+RewriteRule ^login_register_api(.*)$ gra/public/index.php/$1 [L,NC]
+
 
 <Files ".env">
         Order Deny,Allow
