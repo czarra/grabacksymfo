@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class Tasks
 {
-    const MAX_DISTANCE = 0.0005;// 0.0005~35 M 
+    const MAX_DISTANCE = 35; 
     const PATH_TO_IMAGE_FOLDER = 'images/tasks';
     const SERVER_PATH_TO_IMAGE_FOLDER = __DIR__.'/../../public/'.self::PATH_TO_IMAGE_FOLDER;
     
@@ -127,9 +127,11 @@ class Tasks
     
     public function checkifGoodPlace($longitude,$latitude): bool{
         if(is_numeric($longitude) && is_numeric($latitude)){
-            $a = $longitude - $this->longitude;
-            $b = $latitude - $this->latitude;  
-            $distance =sqrt(pow(($a), 2)+pow(($b), 2));
+            $degSin = sin(deg2rad($this->latitude))*sin(deg2rad($latitude));
+            $degcos = (cos(deg2rad($this->latitude))*cos(deg2rad($latitude))*cos(deg2rad($this->longitude-$longitude)));      
+            $deg = rad2deg(acos($degSin+ $degcos));
+            //dag=111196,672m //https://pl.wikipedia.org/wiki/Stopie%C5%84_(geografia)
+            $distance = $deg*111196.672;
             if($distance<self::MAX_DISTANCE){
                 return true;
             }
