@@ -127,11 +127,12 @@ class Tasks
     
     public function checkifGoodPlace($longitude,$latitude): bool{
         if(is_numeric($longitude) && is_numeric($latitude)){
-            $degSin = sin(deg2rad($this->latitude))*sin(deg2rad($latitude));
-            $degcos = (cos(deg2rad($this->latitude))*cos(deg2rad($latitude))*cos(deg2rad($this->longitude-$longitude)));      
-            $deg = rad2deg(acos($degSin+ $degcos));
-            //dag=111196,672m //https://pl.wikipedia.org/wiki/Stopie%C5%84_(geografia)
-            $distance = $deg*111196.672;
+            $earthRadiusInMeters = 6371000;
+            $diffLatInRad = deg2rad($this->latitude - $latitude);
+            $diffLngInRad = deg2rad($this->longitude - $longitude);
+            $radHav = sin($diffLatInRad/2)*sin($diffLatInRad/2)+cos(deg2rad($latitude))*cos(deg2rad($latitude))*sin($diffLngInRad/2)*sin($diffLngInRad/2);
+            $distanceInRad = 2*asin(sqrt($radHav));
+            $distance = $distanceInRad*$earthRadiusInMeters;            
             if($distance<self::MAX_DISTANCE){
                 return true;
             }
